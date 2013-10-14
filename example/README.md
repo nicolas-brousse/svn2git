@@ -18,6 +18,6 @@ Specific options:
     -h, --help                       Show this message
 ```
 
-```
+```bash
 $ svn2git -r repositories.yml -A authors.txt
 ```
