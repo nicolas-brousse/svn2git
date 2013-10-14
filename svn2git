@@ -1,0 +1,122 @@
+#!/usr/bin/env ruby
+
+# Copyright (c) 2013 Nicolas Brousse
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in
+# the Software without restriction, including without limitation the rights to
+# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+# the Software, and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+require 'optparse'
+require 'pp'
+
+module Svn2Git
+
+  # The Commander class
+  class Commander
+  
+    def initialize args
+    end
+  end
+  
+  # The Parser class
+  class Parser
+    attr_reader :options
+
+    def initialize(args=[])
+      # Set up reasonable defaults for options.
+      @options = {}
+      @options[:verbose]      = false
+      @options[:dryrun]       = false
+      @options[:authors]      = nil
+      @options[:repositories] = nil
+      @options[:only]         = nil
+      @options[:exclude]      = []
+      @options[:run_localy]   = false
+
+
+      # Parse the command-line arguments.
+      @opts = OptionParser.new do |opts|
+        opts.banner = 'Usage: migrator [options] EXPORT_DIRECTORY'
+
+        opts.separator ''
+        opts.separator 'Specific options:'
+
+
+        opts.on('-r', '--repositories REPOSITORIES_FILE', "Path to file containing repositories to migrate)") do |repositories|
+          @options[:repositories] = repositories
+        end
+
+        opts.on('-A', '--authors AUTHORS_FILE', "Path to file containing svn-to-git authors mapping)") do |authors|
+          @options[:authors] = File.expand_path(authors.gsub(' ', "\\ "))
+        end
+
+        opts.on('--only a, b', Array, 'Only import repository with type is in this list') do |only|
+          @options[:only] = only
+        end
+
+        opts.on('--exclude a, b', Array, 'Repositories to exclude') do |exclude|
+          @options[:exclude] = exclude
+        end
+
+        opts.on('-l', '--localy', 'Run command localy') do
+          @options[:run_localy] = true
+          # Todo: Can add option into yml to precise no git:url but git:file to create a git --bare??
+        end
+
+
+        opts.on('--dry-run', 'Prints out commands without running them') do
+          @options[:dryrun] = true
+        end
+
+        opts.on('-v', '--verbose', 'Be more verbose. May be given more than once') do
+          @options[:verbose] = true
+        end
+
+        opts.separator ""
+
+        # No argument, shows at tail.  This will print an options summary.
+        # Try it and see!
+        opts.on_tail('-h', '--help', 'Show this message') do
+          puts opts
+          exit
+        end
+      end
+
+      @opts.parse! args
+    end
+  end
+  
+  class Translater
+  end
+
+  class Repository
+    attr_reader :name, :options, :svn, :git
+
+    def initialize(name, config={})
+      @name        = name
+      @options     = config['options']      unless config['options'].nil?
+      @svn         = config['svn']          unless config['svn'].nil?
+      @git         = config['git']          unless config['git'].nil?
+    end
+  end
+  
+  class Palette
+  end
+end
+
+# Run migration
+migration = Svn2Git::Commander.new(ARGV)
+migration.run!
