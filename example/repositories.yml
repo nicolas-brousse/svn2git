@@ -1,0 +1,21 @@
+repositories:
+
+    'project1':
+        svn:
+            url: "svn://svn.server.com/project1"
+        git:
+            url: "git@git.server.com:project1.git"
+        options:
+            trunk: /trunk
+            tags: /tags
+            branches: /branches
+
+    'project2':
+        svn:
+            url: "svn://svn.server.com/project2"
+        git:
+            url: "git@git.server.com:project2.git"
+        options:
+            trunk: ~
+            tags: ~
+            branches: ~
