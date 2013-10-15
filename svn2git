@@ -29,7 +29,7 @@ module Svn2Git
   class Commander
 
     def initialize(args)
-      parsor   = Migrator::OptionParsor.new args
+      parsor   = Parser.new args
       @options = parsor.options
     end
 
@@ -45,6 +45,11 @@ module Svn2Git
 
     def requirements
       # TODO: Check git with: `which git`
+    end
+
+    def load_repositories
+      repositories = []
+      repositories
     end
   end
 
