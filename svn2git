@@ -34,6 +34,17 @@ module Svn2Git
     end
 
     def run!
+      banner
+      requirements
+    end
+
+  private
+
+    def banner
+    end
+
+    def requirements
+      # TODO: Check git with: `which git`
     end
   end
 
